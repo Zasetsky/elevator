@@ -1,28 +1,30 @@
 <template>
-    <div class="caption-text" :style="{marginTop:y + 'px'}" @click="click()">
+    <div class="caption-text" :style="{marginTop:y + 'px'}">
         
     </div>
 </template>
 <script>
 export default {
-    name: 'ElevatorComponent',
-    data() {
-    return {
-      y: 500
-    }
-  },
-    methods: {
-    click() {
-      this.y -=99
-      if(this.y < 0) {
-        this.y += 500
+  name: 'ElevatorComponent',
+  props: {
+      position: {
+        type: Number,
       }
+    },
+  data() {
+    return {
     }
   },
+  computed: {
+    y(){
+      return this.position
+    }
+  }
 }
 </script>
 <style lang="scss">
 .caption-text {
+    position: absolute;
     width: 100px;
     height: 100px;
     margin-left: 50px;
