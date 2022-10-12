@@ -26,15 +26,16 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
 .caption-text {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    margin-left: 50px;
-    background-color: red;
-  }
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  margin-left: 50px;
+  background-color: red;
+}
 .openDoors {
-    background-color: yellow;
-  }
+  background-color: yellow;
+  transition: all 1s !important;
+}
 </style>

@@ -7,7 +7,7 @@
     />
     <Floor 
       v-for="(item, id) in items" :key="id"
-      @buttonClick="button"
+      @buttonClick="move"
       :id="id"
     />
   </div>
@@ -39,7 +39,7 @@ export default {
     }
   },
   methods: {
-    button(id) {
+    move(id) {
       this.oldPosition = this.position
       if(!this.isActiveElevator && !this.isOpenDoors) {
         this.isActiveElevator = true
@@ -58,6 +58,7 @@ export default {
       this.isOpenDoors = true
       setTimeout(this.closeDoors, 3000)
     },
+
     closeDoors() {
       this.isOpenDoors = false
     }
