@@ -3,6 +3,7 @@
     <Elevator 
       :position="position" 
       :speed="speed"
+      :isOpenDoors="isOpenDoors"
     />
     <Floor 
       v-for="(item, id) in items" :key="id"
@@ -27,7 +28,9 @@ export default {
       items: 5,
       position: 500,
       height: 125,
-      oldPosition: 0
+      oldPosition: 0,
+      isActiveElevator: false,
+      isOpenDoors: false
     }
   },
   computed: {
@@ -38,15 +41,25 @@ export default {
   methods: {
     button(id) {
       this.oldPosition = this.position
-      if(!this.isActive) {
-        this.isActive = true
+      if(!this.isActiveElevator && !this.isOpenDoors) {
+        this.isActiveElevator = true
         this.position = id * this.height
+
         setTimeout(this.busyElevator, this.speed * 1000)
-        console.log(this.speed)
+        setTimeout(this.openDoors, this.speed * 1000)
       }
     },
+
     busyElevator() {
-      this.isActive = false
+      this.isActiveElevator = false
+    },
+
+    openDoors() {
+      this.isOpenDoors = true
+      setTimeout(this.closeDoors, 3000)
+    },
+    closeDoors() {
+      this.isOpenDoors = false
     }
   }
 }

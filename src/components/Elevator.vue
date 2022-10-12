@@ -1,6 +1,7 @@
 <template>
   <div 
-    class="caption-text" 
+    class="caption-text"
+    :class="{openDoors: isOpenDoors}" 
     :style="{marginTop: y + 'px', transition: speed + 's'}">
   </div>
 </template>
@@ -14,7 +15,10 @@ export default {
       speed: {
         type: Number
       },
-    },
+      isOpenDoors: {
+        type: Boolean
+      }
+  },
   computed: {
     y() {
       return this.position
@@ -29,6 +33,8 @@ export default {
     height: 100px;
     margin-left: 50px;
     background-color: red;
-
+  }
+.openDoors {
+    background-color: yellow;
   }
 </style>
