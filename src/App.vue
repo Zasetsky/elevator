@@ -45,12 +45,12 @@ export default {
         this.isActiveElevator = true
         this.position = id * this.height
 
-        setTimeout(this.busyElevator, this.speed * 1000)
+        setTimeout(this.deactivatingElevator, this.speed * 1000)
         setTimeout(this.openDoors, this.speed * 1000)
       }
     },
 
-    busyElevator() {
+    deactivatingElevator() {
       this.isActiveElevator = false
     },
 
