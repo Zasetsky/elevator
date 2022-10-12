@@ -1,10 +1,14 @@
 <template>
   <div class="main">
-    <Elevator :position="position" />
+    <Elevator 
+      :position="position" 
+      :speed="speed"
+    />
     <Floor 
       v-for="(item, id) in items" :key="id"
       @buttonClick="button"
-      :id="id"/>
+      :id="id"
+    />
   </div>
 </template>
 
@@ -20,14 +24,31 @@ export default {
   },
   data() {
     return {
-      items: [0,0,0,0,0],
-      position: 0
+      items: 5,
+      position: 500,
+      id: 0,
+      oldPosition: 0
+    }
+  },
+  computed: {
+    speed() {
+      if(this.position == this.oldPosition - 125 || this.position == this.oldPosition + 125) {
+        return 1
+      } if(this.position == this.oldPosition - 250 || this.position == this.oldPosition + 250 ) {
+        return 2
+      } if(this.position == this.oldPosition - 375 || this.position == this.oldPosition + 375) {
+        return 3
+      } else {
+        return 4
+      }
     }
   },
   methods: {
     button(id) {
+      this.oldPosition = this.position
       this.position = id * 125
-      console.log(this.position)
+      this.id = id
+      console.log(this.speed);
     },
   }
 }

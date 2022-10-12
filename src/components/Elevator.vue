@@ -1,7 +1,8 @@
 <template>
-    <div class="caption-text" :style="{marginTop:y + 'px'}">
-        
-    </div>
+  <div 
+    class="caption-text" 
+    :style="{marginTop:y + 'px', transition: speed + 's'}">
+  </div>
 </template>
 <script>
 export default {
@@ -9,12 +10,11 @@ export default {
   props: {
       position: {
         type: Number,
-      }
+      },
+      speed: {
+        type: Number
+      },
     },
-  data() {
-    return {
-    }
-  },
   computed: {
     y(){
       return this.position
@@ -29,6 +29,6 @@ export default {
     height: 100px;
     margin-left: 50px;
     background-color: red;
-    transition: all 3s;
+
   }
 </style>
