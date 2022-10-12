@@ -26,30 +26,28 @@ export default {
     return {
       items: 5,
       position: 500,
-      id: 0,
+      height: 125,
       oldPosition: 0
     }
   },
   computed: {
     speed() {
-      if(this.position == this.oldPosition - 125 || this.position == this.oldPosition + 125) {
-        return 1
-      } if(this.position == this.oldPosition - 250 || this.position == this.oldPosition + 250 ) {
-        return 2
-      } if(this.position == this.oldPosition - 375 || this.position == this.oldPosition + 375) {
-        return 3
-      } else {
-        return 4
-      }
+      return Math.abs(this.position - this.oldPosition) / this.height
     }
   },
   methods: {
     button(id) {
       this.oldPosition = this.position
-      this.position = id * 125
-      this.id = id
-      console.log(this.speed);
+      if(!this.isActive) {
+        this.isActive = true
+        this.position = id * this.height
+        setTimeout(this.busyElevator, this.speed * 1000)
+        console.log(this.speed)
+      }
     },
+    busyElevator() {
+      this.isActive = false
+    }
   }
 }
 

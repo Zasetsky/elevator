@@ -1,7 +1,7 @@
 <template>
   <div 
     class="caption-text" 
-    :style="{marginTop:y + 'px', transition: speed + 's'}">
+    :style="{marginTop: y + 'px', transition: speed + 's'}">
   </div>
 </template>
 <script>
@@ -16,7 +16,7 @@ export default {
       },
     },
   computed: {
-    y(){
+    y() {
       return this.position
     }
   }
