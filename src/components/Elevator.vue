@@ -1,41 +1,76 @@
 <template>
-  <div 
-    class="caption-text"
-    :class="{openDoors: isOpenDoors}" 
-    :style="{marginTop: y + 'px', transition: speed + 's'}">
+  <div class="shaft">
+    <div 
+      class="shaft__elevator"
+      :class="{openDoors: isOpenDoors}" 
+      :style="{marginTop: position + 'px', transition: speed + 's'}">
+    </div>
+    <Floor 
+    v-for="(item, id) in items" :key="id"
+    :id="id"
+    @buttonClick="move"
+    />
   </div>
 </template>
 <script>
+import Floor from './Floor.vue'
+
 export default {
-  name: 'ElevatorComponent',
-  props: {
-      position: {
-        type: Number,
-      },
-      speed: {
-        type: Number
-      },
-      isOpenDoors: {
-        type: Boolean
-      }
-  },
-  computed: {
-    y() {
-      return this.position
-    }
-  }
+    name: "ElevatorComponent",
+    data() {
+        return {
+            isActiveElevator: false,
+            items: 5,
+            isOpenDoors: false,
+            position: 500,
+            height: 125,
+            oldPosition: 0,
+        };
+    },
+    computed: {
+        speed() {
+            return Math.abs(this.position - this.oldPosition) / this.height;
+        },
+    },
+    methods: {
+        move(id) {
+            this.oldPosition = this.position;
+            if (!this.isActiveElevator && !this.isOpenDoors) {
+                this.isActiveElevator = true;
+                this.position = id * this.height;
+                setTimeout(this.deactivatingElevator, this.speed * 1000);
+                setTimeout(this.openDoors, this.speed * 1000);
+            }
+        },
+        deactivatingElevator() {
+            this.isActiveElevator = false;
+        },
+        openDoors() {
+            this.isOpenDoors = true;
+            setTimeout(this.closeDoors, 3000);
+        },
+        closeDoors() {
+            this.isOpenDoors = false;
+        }
+    },
+    components: { Floor }
 }
 </script>
-<style>
-.caption-text {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  margin-left: 50px;
-  background-color: red;
+<style lang="scss">
+.shaft {
+  position: relative;
+
+  &__elevator {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    margin-left: 50px;
+    background-color: red; 
+  }
 }
 .openDoors {
   background-color: yellow;
   transition: all 1s !important;
 }
+
 </style>

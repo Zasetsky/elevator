@@ -1,6 +1,6 @@
 <template>
     <div class="floor">
-        <button id="button" @click="buttonClick()" :class="{active: isActive}" />
+        <button class="floor__button" @click="buttonClick()" :class="{active: isActive}" />
     </div>
 </template>
 <script>
@@ -29,7 +29,7 @@ export default {
         height: 100px;
         width: 99px;
         margin-left: 45px;
-        button {
+        &__button {
             padding: 10px;
             margin-left: 120px;
             margin-top: 30px;
