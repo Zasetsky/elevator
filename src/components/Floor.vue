@@ -1,21 +1,15 @@
 <template>
     <div class="floor">
-        <button class="floor__button" @click="buttonClick()" :class="{active: isActive}" />
+        <button class="floor__button" @click="buttonClick()" :class="{active: floors.isActive}" />
     </div>
 </template>
 <script>
 export default {
     name: 'FloorComponent',
-    props: ['id'],
-    data() {
-        return {
-            isActive: false
-        }
-    },
+    props: ['floorsButton', 'id'],
     methods: {
         buttonClick() {
-            this.isActive = !this.isActive
-            this.$emit('buttonClick', this.id)
+            this.$emit('buttonClick', this.floorsButton[this.id].id)
         },
     }
 }
