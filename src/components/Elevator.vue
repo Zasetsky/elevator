@@ -1,17 +1,21 @@
 <template>
-  <div class="shaft">
-    <div 
-      class="shaft__elevator"
-      :class="{openDoors: isOpenDoors}" 
-      :style="{marginTop: position + 'px', transition: speed + 's'}">
+  <div class="house">
+    <div class="shaft">
+      <div 
+        class="shaft__elevator"
+        :class="{openDoors: isOpenDoors}" 
+        :style="{marginTop: position + 'px', transition: speed + 's'}">
+      </div>
+      <Floor v-for="(floor, id) in floorsCount" :key="id"/>
     </div>
-    <Floor v-for="(floor, id) in floors" :key="id"/>
+    <div>
     <Button 
-      v-for="(button, id) in floorsButton" :key="id"
-      :floorsButton="floorsButton"
-      :id="id"
-      @buttonClick="addToQueue"
+        v-for="(button, id) in floorsButton" :key="id"
+        :floorsButton="floorsButton"
+        :id="id"
+        @buttonClick="addToQueue"
     />
+    </div>
   </div>
 </template>
 <script>
@@ -25,10 +29,11 @@ export default {
       return {
           isActiveElevator: false,
           isOpenDoors: false,
-          floorsCount: 10,
-          position: 500,
+          floorsCount: 5,
+          buttonsCount: 5,
+          position: 525,
           height: 125,
-          oldPosition: 500,
+          oldPosition: 525,
           floorsButton: [],
           tempID: 4,
           queueArr: []
@@ -42,8 +47,8 @@ export default {
   watch: {
   },
   mounted() {
-    for(let i = 0; i < this.floorsCount; i++) {
-      this.floors.push({
+    for(let i = 0; i < this.buttonsCount; i++) {
+      this.floorsButton.push({
         id: i,
         isActive: false
       })
@@ -76,7 +81,7 @@ export default {
     closeDoors() {
       this.isOpenDoors = false;
       this.isActiveElevator = false;
-      this.floors[this.tempID].isActive = false;
+      this.floorsButton[this.tempID].isActive = false;
       if(!this.isActiveElevator && this.queueArr.length > 0) {
         const x = this.queueArr.shift();
         this.move(x);
@@ -84,9 +89,9 @@ export default {
     },
 
     queue(id) {
-      if(!this.floors[id].isActive) {
+      if(!this.floorsButton[id].isActive) {
         this.queueArr.push(id);
-        this.floors[id].isActive = true;
+        this.floorsButton[id].isActive = true;
         console.log(this.queueArr);
       }
     },
@@ -94,21 +99,23 @@ export default {
 }
 </script>
 <style lang="scss">
-.shaft {
-  display: grid;
-  position: relative;
-  grid-template-columns: 0.1fr 0.1fr;
-}
-.shaft__elevator {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    margin-left: 50px;
-    background-color: red; 
+  .house {
+    display: flex;
+    position: relative;
+    margin-top: 25px;
   }
-.openDoors {
-  background-color: yellow;
-  transition: all 1s !important;
-}
+  .shaft {
+  }
+  .shaft__elevator {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      margin-left: 50px;
+      background-color: red; 
+    }
+  .openDoors {
+    background-color: yellow;
+    transition: all 1s !important;
+  }
 
 </style>

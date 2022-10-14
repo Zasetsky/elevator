@@ -1,11 +1,12 @@
 <template>
     <div>
-        <button class="floor__button" @click="buttonClick()" :class="{active: floorsButton[id].isActive}" />
+        <button class="floorButton" @click="buttonClick()" :class="{active: floorsButton[id].isActive}" />
     </div>
 </template>
 <script>
 export default {
     name: 'ButtonComponent',
+    props: ['floorsButton', 'id'],
     methods: {
         buttonClick() {
             this.$emit('buttonClick', this.floorsButton[this.id].id)
@@ -13,6 +14,10 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style>
+    .floorButton {
+        padding: 10px;
+        margin: 35px 0 65px 20px;
+
+    }
 </style>
