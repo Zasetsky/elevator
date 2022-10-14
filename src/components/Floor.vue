@@ -1,17 +1,11 @@
 <template>
     <div class="floor">
-        <button class="floor__button" @click="buttonClick()" :class="{active: floors.isActive}" />
     </div>
 </template>
 <script>
 export default {
     name: 'FloorComponent',
     props: ['floorsButton', 'id'],
-    methods: {
-        buttonClick() {
-            this.$emit('buttonClick', this.floorsButton[this.id].id)
-        },
-    }
 }
 </script>
 <style lang="scss">
