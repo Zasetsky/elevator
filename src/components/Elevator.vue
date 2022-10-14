@@ -2,11 +2,12 @@
   <div class="house">
     <div class="shaft">
       <div 
-        class="shaft__elevator"
-        :class="{openDoors: isOpenDoors}" 
+        v-for="(el, id) in elevatorsCount" :key="id"
+        class="elevator"
+        :class="{openDoors: isOpenDoors, 'newElevator' : id >= 1}" 
         :style="{marginTop: position + 'px', transition: speed + 's'}">
       </div>
-      <Floor v-for="(floor, id) in floorsCount" :key="id"/>
+      <Floor v-for="(floor, id) in floorsCount" :key="'A' + id"/>
     </div>
     <div>
     <Button 
@@ -29,11 +30,12 @@ export default {
       return {
           isActiveElevator: false,
           isOpenDoors: false,
-          floorsCount: 5,
+          floorsCount: 10,
           buttonsCount: 5,
-          position: 525,
+          elevatorsCount: 2,
+          position: 500,
           height: 125,
-          oldPosition: 525,
+          oldPosition: 500,
           floorsButton: [],
           tempID: 4,
           queueArr: []
@@ -47,12 +49,18 @@ export default {
   watch: {
   },
   mounted() {
-    for(let i = 0; i < this.buttonsCount; i++) {
-      this.floorsButton.push({
-        id: i,
-        isActive: false
-      })
-    }
+      for(let i = 0; i < this.buttonsCount; i++) {
+        this.floorsButton.push({
+          id: i,
+          isActive: false
+        })
+      }
+      for(let i = 0; i < this.elevatorsCount; i++) {
+        this.elevatorsCount.push({
+          id: i,
+          isActiveElevator: false,
+        })
+      }
   },
   methods: {
     addToQueue(id) {
@@ -105,8 +113,10 @@ export default {
     margin-top: 25px;
   }
   .shaft {
+    display: grid;
+    grid-template-columns: 0.1fr 0.1fr;
   }
-  .shaft__elevator {
+  .elevator {
       position: absolute;
       width: 100px;
       height: 100px;
@@ -116,6 +126,9 @@ export default {
   .openDoors {
     background-color: yellow;
     transition: all 1s !important;
+  }
+  .newElevator{
+    margin-left: 206px;
   }
 
 </style>
