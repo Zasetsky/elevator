@@ -2,10 +2,10 @@
   <div class="house">
     <div class="shaft">
       <div 
-        v-for="(el, id) in elevatorsCount" :key="id"
+        v-for="el in elevator" :key="el.id"
         class="elevator"
-        :class="{openDoors: isOpenDoors, 'newElevator' : id >= 1}" 
-        :style="{marginTop: position + 'px', transition: speed + 's'}">
+        :class="{openDoors: el.isOpenDoors, 'newElevator' : el.id >= 1, 'newElevator2' : el.id >= 2 }" 
+        :style="{marginTop: el.position + 'px', transition: speed + 's'}">
       </div>
       <Floor v-for="(floor, id) in floorsCount" :key="'A' + id"/>
     </div>
@@ -29,24 +29,16 @@ export default {
   data() {
       return {
           isActiveElevator: false,
-          isOpenDoors: false,
           floorsCount: 10,
           buttonsCount: 5,
-          elevatorsCount: 2,
-          position: 500,
+          elevatorsCount: 3,
           height: 125,
-          oldPosition: 500,
           floorsButton: [],
+          elevator: [],
+          speed: 0,
           tempID: 4,
           queueArr: []
       };
-  },
-  computed: {
-      speed() {
-          return Math.abs(this.position - this.oldPosition) / this.height;
-      },
-  },
-  watch: {
   },
   mounted() {
       for(let i = 0; i < this.buttonsCount; i++) {
@@ -56,44 +48,53 @@ export default {
         })
       }
       for(let i = 0; i < this.elevatorsCount; i++) {
-        this.elevatorsCount.push({
+        this.elevator.push({
           id: i,
-          isActiveElevator: false,
+          isActive: false,
+          position: 500,
+          oldPosition: 500,
+          isOpenDoors: false
         })
       }
   },
   methods: {
     addToQueue(id) {
-        if(this.tempID != id){
-          this.queue(id);
-        if(!this.isActiveElevator && this.queueArr.length > 0) {
-          const x = this.queueArr.shift();
-          this.move(x);
+      if(this.tempID != id){
+        this.queue(id);
+        console.log(id);
+        for(let i = 0; i < this.elevator.length; i++) {
+          if(!this.elevator[i].isActive && this.queueArr.length > 0) {
+            const x = this.queueArr.shift();
+            this.move(x, i);
+          }
         }
       }
     },
 
-    move(id) {
+    move(id, i) {
       this.tempID = id;
-      this.isActiveElevator = true;
-      this.oldPosition = this.position;  
-      this.position = id * this.height;
-      setTimeout(this.openDoors, this.speed * 1000);
+      this.elevator[i].isActive = true;
+      this.elevator[i].oldPosition = this.elevator[i].position;  
+      this.elevator[i].position = id * this.height;
+      this.speed = Math.abs(this.elevator[i].position - this.elevator[i].oldPosition) / this.height;
+      setTimeout(this.openDoors, this.speed * 1000, i);
     },
 
-    openDoors() {
-        this.isOpenDoors = true;
-        setTimeout(this.closeDoors, 3000);
+    openDoors(id) {
+        this.elevator[id].isOpenDoors = true;
+        setTimeout(this.closeDoors, 3000, id);
     },
 
-    closeDoors() {
-      this.isOpenDoors = false;
-      this.isActiveElevator = false;
+    closeDoors(id) {
+      this.elevator[id].isOpenDoors = false;
+      this.elevator[id].isActive = false;
       this.floorsButton[this.tempID].isActive = false;
-      if(!this.isActiveElevator && this.queueArr.length > 0) {
-        const x = this.queueArr.shift();
-        this.move(x);
-      }
+      for(let i = 0; i < this.elevator.length; i++) {
+            if(!this.elevator[i].isActive && this.queueArr.length > 0) {
+              const x = this.queueArr.shift();
+              this.move(x, i);
+            }
+          }
     },
 
     queue(id) {
