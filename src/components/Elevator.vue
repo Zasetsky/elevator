@@ -23,6 +23,9 @@
 import Floor from './Floor.vue'
 import Button from './Button.vue'
 
+// localStorage.floorsButton = this.floorsButton
+// localStorage.elevator = this.elevator
+
 export default {
   name: "ElevatorComponent",
   components: { Floor, Button },
@@ -31,39 +34,57 @@ export default {
           isActiveElevator: false,
           floorsCount: 10,
           buttonsCount: 5,
-          elevatorsCount: 3,
+          elevatorsCount: 2,
           height: 125,
-          floorsButton: [],
-          elevator: [],
           speed: 0,
-          tempID: 4,
-          queueArr: []
+          queueArr: [],
+          floorsButton: [],
+          elevator: []
       };
   },
-  mounted() {
-      for(let i = 0; i < this.buttonsCount; i++) {
-        this.floorsButton.push({
-          id: i,
-          isActive: false
-        })
+ 
+  created() {
+    if(localStorage.getItem('elevator')) {
+        try {
+          this.elevator = JSON.parse(localStorage.getItem("elevator"))
+          for(let i = 0; i < this.elevator.length; i++) {
+            this.elevator[i].isActive = false
+            this.elevator[i].isOpenDoors = false
+          }
+          
+      } catch(e) {
+          localStorage.removeItem('elevator');
       }
-      for(let i = 0; i < this.elevatorsCount; i++) {
-        this.elevator.push({
-          id: i,
-          isActive: false,
-          position: 500,
-          oldPosition: 500,
-          isOpenDoors: false
-        })
-      }
+    } else {
+          for(let i = 0; i < this.elevatorsCount; i++) {
+            this.elevator.push({
+              id: i,
+              tempId: 4,
+              isActive: false,
+              position: 500,
+              oldPosition: 500,
+              isOpenDoors: false
+            })
+          }
+        }
+
+    for(let i = 0; i < this.buttonsCount; i++) {
+      this.floorsButton.push({
+        id: i,
+        isActive: false,
+        isBusy: false
+      })
+    }
   },
+
   methods: {
     addToQueue(id) {
-      if(this.tempID != id){
+      if(!this.floorsButton[id].isActive && !this.floorsButton[id].isBusy) {
         this.queue(id);
-        console.log(id);
+
         for(let i = 0; i < this.elevator.length; i++) {
           if(!this.elevator[i].isActive && this.queueArr.length > 0) {
+            
             const x = this.queueArr.shift();
             this.move(x, i);
           }
@@ -72,38 +93,59 @@ export default {
     },
 
     move(id, i) {
-      this.tempID = id;
       this.elevator[i].isActive = true;
+ 
       this.elevator[i].oldPosition = this.elevator[i].position;  
       this.elevator[i].position = id * this.height;
+
+      console.log('hi!');
+      this.idSave(id, i);
+
       this.speed = Math.abs(this.elevator[i].position - this.elevator[i].oldPosition) / this.height;
-      setTimeout(this.openDoors, this.speed * 1000, i);
+
+      setTimeout(this.openDoors, this.speed * 1000, id, i);
+
+      this.savePosition()
     },
 
-    openDoors(id) {
-        this.elevator[id].isOpenDoors = true;
-        setTimeout(this.closeDoors, 3000, id);
+    openDoors(id,i) {
+      this.elevator[i].isOpenDoors = true;
+
+      setTimeout(this.closeDoors, 3000, id, i);
     },
 
-    closeDoors(id) {
-      this.elevator[id].isOpenDoors = false;
-      this.elevator[id].isActive = false;
-      this.floorsButton[this.tempID].isActive = false;
+    closeDoors(id, i) {
+      this.elevator[i].isOpenDoors = false;
+      this.elevator[i].isActive = false;
+      this.floorsButton[id].isActive = false;
+
       for(let i = 0; i < this.elevator.length; i++) {
-            if(!this.elevator[i].isActive && this.queueArr.length > 0) {
-              const x = this.queueArr.shift();
-              this.move(x, i);
-            }
-          }
+        if(!this.elevator[i].isActive && this.queueArr.length > 0) {
+          const x = this.queueArr.shift();
+          this.move(x, i);
+        }
+      }
+    },
+
+    idSave(id, i) {
+      this.floorsButton[this.elevator[i].tempId].isBusy = false;    
+      this.elevator[i].tempId = id;
+    },
+
+    savePosition() {
+      const parsed = JSON.stringify(this.elevator);
+      localStorage.setItem('elevator', parsed);
     },
 
     queue(id) {
       if(!this.floorsButton[id].isActive) {
         this.queueArr.push(id);
+
         this.floorsButton[id].isActive = true;
+        this.floorsButton[id].isBusy = true;
         console.log(this.queueArr);
       }
-    },
+    }
   }
 }
 </script>
