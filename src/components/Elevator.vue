@@ -5,7 +5,9 @@
         v-for="el in elevator" :key="el.id"
         class="elevator"
         :class="{openDoors: el.isOpenDoors, 'newElevator' : el.id >= 1, 'newElevator2' : el.id >= 2 }" 
-        :style="{marginTop: el.position + 'px', transition: speed + 's'}">
+        :style="{marginTop: el.position + 'px', transition: speed + 's'}"
+      >
+        <p v-if="el.isUp">&#11014; {{ el.floorNumber }}</p> <p v-if="el.isDown">&#11015; {{ el.floorNumber }}</p>
       </div>
       <Floor v-for="(floor, id) in floorsCount" :key="'A' + id"/>
     </div>
@@ -23,12 +25,14 @@
 import Floor from './Floor.vue'
 import Button from './Button.vue'
 
-// localStorage.floorsButton = this.floorsButton
-// localStorage.elevator = this.elevator
-
 export default {
   name: "ElevatorComponent",
   components: { Floor, Button },
+
+  filters: {
+    unescape: v => String(v)
+  },
+
   data() {
       return {
           isActiveElevator: false,
@@ -39,7 +43,7 @@ export default {
           speed: 0,
           queueArr: [],
           floorsButton: [],
-          elevator: []
+          elevator: [],
       };
   },
  
@@ -48,8 +52,10 @@ export default {
         try {
           this.elevator = JSON.parse(localStorage.getItem("elevator"))
           for(let i = 0; i < this.elevator.length; i++) {
-            this.elevator[i].isActive = false
-            this.elevator[i].isOpenDoors = false
+            this.elevator[i].isActive = false;
+            this.elevator[i].isOpenDoors = false;
+            this.elevator[i].isUp = false;
+            this.elevator[i].isDown = false;
           }
           
       } catch(e) {
@@ -63,7 +69,10 @@ export default {
               isActive: false,
               position: 500,
               oldPosition: 500,
-              isOpenDoors: false
+              isOpenDoors: false,
+              isUp: false,
+              isDown: false,
+              floorNumber: null
             })
           }
         }
@@ -98,19 +107,20 @@ export default {
       this.elevator[i].oldPosition = this.elevator[i].position;  
       this.elevator[i].position = id * this.height;
 
-      console.log('hi!');
+      this.upOrDown(i);
+      this.floorCounter(id, i);
       this.idSave(id, i);
 
       this.speed = Math.abs(this.elevator[i].position - this.elevator[i].oldPosition) / this.height;
 
       setTimeout(this.openDoors, this.speed * 1000, id, i);
-
       this.savePosition()
     },
 
-    openDoors(id,i) {
+    openDoors(id, i) {
       this.elevator[i].isOpenDoors = true;
-
+      this.elevator[i].isUp = false;
+      this.elevator[i].isDown = false;
       setTimeout(this.closeDoors, 3000, id, i);
     },
 
@@ -125,6 +135,18 @@ export default {
           this.move(x, i);
         }
       }
+    },
+
+    upOrDown(i) {
+      if(this.elevator[i].position < this.elevator[i].oldPosition) {
+        this.elevator[i].isUp = true;
+      } else {
+        this.elevator[i].isDown = true;
+      }
+    },
+
+    floorCounter(id, i) {
+      this.elevator[i].floorNumber = id + 1;
     },
 
     idSave(id, i) {
@@ -164,7 +186,13 @@ export default {
       width: 100px;
       height: 100px;
       margin-left: 50px;
-      background-color: red; 
+      background-color: red;
+      font-size: 25px;
+      
+      p {
+        text-align: center;
+        margin-top: 5px;
+      }
     }
   .openDoors {
     background-color: yellow;
