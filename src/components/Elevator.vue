@@ -1,13 +1,13 @@
 <template>
   <div class="house">
-    <div class="shaft">
+    <div class="house__shaft">
       <div 
         v-for="el in elevator" :key="el.id"
-        class="elevator"
+        class="house__shaft__elevator"
         :class="{openDoors: el.isOpenDoors, 'newElevator' : el.id > 0, 'newElevator2' : el.id > 1 }" 
         :style="{marginTop: el.position + 'px', transition: speed + 's'}"
       >
-        <p v-if="el.isUp">&#11014; {{ el.floorNumber }}</p> <p v-if="el.isDown">&#11015; {{ el.floorNumber }}</p>
+        <p v-if="el.isUp">&#11014; {{ el.floorNumber }}</p> <p v-if="el.isDown">&#11015; <b>{{ el.floorNumber }}</b></p>
       </div>
       <Floor v-for="(floor, id) in floorsCount" :key="'A' + id"/>
     </div>
@@ -35,7 +35,7 @@ export default {
           floorsCount: 30,
           buttonsCount: 10,
           elevatorsCount: 3,
-          height: 66,
+          height: 67,
           speed: 0,
           queueArr: [],
           floorsButton: [],
@@ -58,8 +58,8 @@ export default {
               id: i,
               tempId: 4,
               isActive: false,
-              position: 594,
-              oldPosition: 500,
+              position: 603,
+              oldPosition: 603,
               isOpenDoors: false,
               isUp: false,
               isDown: false,
@@ -116,6 +116,7 @@ export default {
     
     openDoors(id, i) {
       this.elevator[i].isOpenDoors = true;
+      this.floorsButton[id].isActive = false;
       this.elevator[i].isUp = false;
       this.elevator[i].isDown = false;
       setTimeout(this.closeDoors, 3000, id, i);
@@ -124,7 +125,6 @@ export default {
     closeDoors(id, i) {
       this.elevator[i].isOpenDoors = false;
       this.elevator[i].isActive = false;
-      this.floorsButton[id].isActive = false;
 
       for(let i = 0; i < this.elevator.length; i++) {
         if(!this.elevator[i].isActive && this.queueArr.length > 0) {
@@ -173,27 +173,35 @@ export default {
     display: flex;
     position: relative;
     margin-top: 25px;
-  }
-  .shaft {
-    display: grid;
-    grid-template-columns: 0.1fr 0.1fr 0.1fr;
-  }
-  .elevator {
-      position: absolute;
-      width: 21px;
-      height: 40px;
-      margin-left: 50px;
-      background-color: red;
-      font-size: 25px;
-      
-      p {
-        text-align: center;
-        margin-top: 5px;
+
+    &__shaft {
+      display: grid;
+      grid-template-columns: 0.1fr 0.1fr 0.1fr;
+
+      &__elevator {
+        position: absolute;
+        width: 21px;
+        height: 40px;
+        margin-left: 50px;
+        background-color: #76e6ff;
+        font-size: 25px;
+        
+        p {
+          text-align: center;
+          margin-top: 5px;
+        }
       }
     }
+  }
+
+  @keyframes blinking {
+    0% { background: #52defeda }
+    50% { background: #aff0ff }
+    100% { background: #3fbeda }
+  }
+
   .openDoors {
-    background-color: yellow;
-    transition: all 1s !important;
+    animation: blinking 1000ms infinite;
   }
   .newElevator{
     margin-left: 137px;

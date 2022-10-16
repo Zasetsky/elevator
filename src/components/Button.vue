@@ -1,6 +1,10 @@
 <template>
     <div>
-        <button class="floorButton" @click="buttonClick()" :class="{active: floorsButton[id].isActive}" />
+        <button 
+            class="floorButton" 
+            @click="buttonClick()" 
+            :class="{active: floorsButton[id].isActive}" 
+        >◎</button>
     </div>
 </template>
 <script>
@@ -16,8 +20,12 @@ export default {
 </script>
 <style>
     .floorButton {
-        padding: 10px;
+        width: 30px;
+        height: 25px;
         margin: 10px 0 32px 10px;
-
+        background: #76e6ff;
+    }
+    .active {
+        background: #fff876;
     }
 </style>
