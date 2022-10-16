@@ -4,7 +4,7 @@
       <div 
         v-for="el in elevator" :key="el.id"
         class="elevator"
-        :class="{openDoors: el.isOpenDoors, 'newElevator' : el.id >= 1, 'newElevator2' : el.id >= 2 }" 
+        :class="{openDoors: el.isOpenDoors, 'newElevator' : el.id > 0, 'newElevator2' : el.id > 1 }" 
         :style="{marginTop: el.position + 'px', transition: speed + 's'}"
       >
         <p v-if="el.isUp">&#11014; {{ el.floorNumber }}</p> <p v-if="el.isDown">&#11015; {{ el.floorNumber }}</p>
@@ -29,16 +29,12 @@ export default {
   name: "ElevatorComponent",
   components: { Floor, Button },
 
-  filters: {
-    unescape: v => String(v)
-  },
-
   data() {
       return {
           isActiveElevator: false,
-          floorsCount: 10,
-          buttonsCount: 5,
-          elevatorsCount: 2,
+          floorsCount: 30,
+          buttonsCount: 10,
+          elevatorsCount: 3,
           height: 125,
           speed: 0,
           queueArr: [],
@@ -48,20 +44,15 @@ export default {
   },
  
   created() {
-    if(localStorage.getItem('elevator')) {
-        try {
-          this.elevator = JSON.parse(localStorage.getItem("elevator"))
-          for(let i = 0; i < this.elevator.length; i++) {
-            this.elevator[i].isActive = false;
-            this.elevator[i].isOpenDoors = false;
-            this.elevator[i].isUp = false;
-            this.elevator[i].isDown = false;
-          }
-          
-      } catch(e) {
-          localStorage.removeItem('elevator');
-      }
-    } else {
+    // if(localStorage.getItem('elevator')) {
+    //   this.elevator = JSON.parse(localStorage.getItem("elevator"))
+    //   for(let i = 0; i < this.elevator.length; i++) {
+    //     this.elevator[i].isActive = false;
+    //     this.elevator[i].isOpenDoors = false;
+    //     this.elevator[i].isUp = false;
+    //     this.elevator[i].isDown = false;
+    //   }
+    // } else {
           for(let i = 0; i < this.elevatorsCount; i++) {
             this.elevator.push({
               id: i,
@@ -75,7 +66,7 @@ export default {
               floorNumber: null
             })
           }
-        }
+        // }
 
     for(let i = 0; i < this.buttonsCount; i++) {
       this.floorsButton.push({
@@ -103,20 +94,26 @@ export default {
 
     move(id, i) {
       this.elevator[i].isActive = true;
- 
-      this.elevator[i].oldPosition = this.elevator[i].position;  
-      this.elevator[i].position = id * this.height;
 
+      this.setPosition(id, i);
+      this.setSpeed(i);
       this.upOrDown(i);
       this.floorCounter(id, i);
-      this.idSave(id, i);
-
-      this.speed = Math.abs(this.elevator[i].position - this.elevator[i].oldPosition) / this.height;
-
       setTimeout(this.openDoors, this.speed * 1000, id, i);
       this.savePosition()
     },
 
+    setPosition(id, i) {
+      this.elevator[i].oldPosition = this.elevator[i].position;  
+      this.elevator[i].position = id * this.height;
+
+      this.idSave(id, i);
+    },
+
+    setSpeed(i) {
+      this.speed = Math.abs(this.elevator[i].position - this.elevator[i].oldPosition) / this.height;
+    },
+    
     openDoors(id, i) {
       this.elevator[i].isOpenDoors = true;
       this.elevator[i].isUp = false;
@@ -146,7 +143,7 @@ export default {
     },
 
     floorCounter(id, i) {
-      this.elevator[i].floorNumber = id + 1;
+      this.elevator[i].floorNumber = this.buttonsCount - id;
     },
 
     idSave(id, i) {
@@ -179,7 +176,7 @@ export default {
   }
   .shaft {
     display: grid;
-    grid-template-columns: 0.1fr 0.1fr;
+    grid-template-columns: 0.1fr 0.1fr 0.1fr;
   }
   .elevator {
       position: absolute;
@@ -200,6 +197,9 @@ export default {
   }
   .newElevator{
     margin-left: 206px;
+  }
+  .newElevator2{
+    margin-left: 362px;
   }
 
 </style>
