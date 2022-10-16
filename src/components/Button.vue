@@ -28,4 +28,8 @@ export default {
     .active {
         background: #fff876;
     }
+
+    .fiveButtons {
+        margin: 25px 0 53px 10px;
+    }
 </style>
