@@ -35,7 +35,7 @@ export default {
           floorsCount: 30,
           buttonsCount: 10,
           elevatorsCount: 3,
-          height: 125,
+          height: 66,
           speed: 0,
           queueArr: [],
           floorsButton: [],
@@ -58,7 +58,7 @@ export default {
               id: i,
               tempId: 4,
               isActive: false,
-              position: 500,
+              position: 594,
               oldPosition: 500,
               isOpenDoors: false,
               isUp: false,
@@ -180,8 +180,8 @@ export default {
   }
   .elevator {
       position: absolute;
-      width: 100px;
-      height: 100px;
+      width: 21px;
+      height: 40px;
       margin-left: 50px;
       background-color: red;
       font-size: 25px;
@@ -196,10 +196,10 @@ export default {
     transition: all 1s !important;
   }
   .newElevator{
-    margin-left: 206px;
+    margin-left: 137px;
   }
   .newElevator2{
-    margin-left: 362px;
+    margin-left: 225px;
   }
 
 </style>

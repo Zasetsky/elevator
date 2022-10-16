@@ -17,7 +17,7 @@ export default {
 <style>
     .floorButton {
         padding: 10px;
-        margin: 35px 0 65px 20px;
+        margin: 10px 0 32px 10px;
 
     }
 </style>
